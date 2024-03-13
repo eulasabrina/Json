@@ -1,84 +1,126 @@
 ﻿using System;
+using System.Data;
+using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
+using Dapper;
+using HelloWorld.Data;
+using HelloWorld.Models;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
+
 
 namespace HelloWorld
 {
+    
     internal class Program
     {
         static void Main(string[] args)
         {
-            int[] intsToCompress = new int[]{10,15,20,25,30,12,34};
+            IConfiguration config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
 
-            DateTime startTime = DateTime.Now;
+            DataContextDapper dapper = new DataContextDapper(config);
 
-            int totalValue = intsToCompress[0] + intsToCompress[1]
-                + intsToCompress[2] + intsToCompress[3]
-                + intsToCompress[4] + intsToCompress[5]
-                + intsToCompress[6];
+            // // Console.WriteLine(rightNow);
 
-                Console.WriteLine((DateTime.Now -startTime).TotalSeconds);     
+            // Computer myComputer = new Computer()
+            // {
+            //     Motherboard = "Z690",
+            //     HasWifi = true,
+            //     HasLTE = false,
+            //     ReleaseDate = DateTime.Now,
+            //     Price = 943.87m,
+            //     VideoCard = "RTX 2060"
 
-                Console.WriteLine(totalValue);
+            // };  
+          
+            // string sql =  @"INSERT INTO TutorialAppSchema.Computer(
+            //     Motherboard,
+            //     HasWifi,
+            //     HasLTE,
+            //     ReleaseDate,
+            //     Price ,
+            //     VideoCard
+            // ) VALUES('" + myComputer.Motherboard
+            //         +"','" + myComputer.HasWifi
+            //         +"','" + myComputer.HasLTE
+            //         +"','" + myComputer.ReleaseDate
+            //         +"','" + myComputer.Price
+            //         +"','" + myComputer.VideoCard
+            //  +  "')";
 
-                totalValue = 0;
+            // File.WriteAllText("log.txt", "\n" + sql + "\n" );
 
-                startTime = DateTime.Now;
+            //  using StreamWriter openFile = new("log.txt", append: true); 
+             
+            //  openFile.WriteLine("\n" + sql + "\n");
+            //  openFile.Close();
 
-            for(int i = 0; i < intsToCompress.Length; i++)
-            {
-              totalValue += intsToCompress[i];
+              string computersJson = File.ReadAllText("Computers.json");
+             
+             // Console.WriteLine(computersJson);
 
-            }
+             JsonSerializerOptions options = new JsonSerializerOptions()
+             {                
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+             };
 
-            Console.WriteLine((DateTime.Now -startTime).TotalSeconds); 
+              IEnumerable<Computer>? computersNewtonSoft = JsonConvert.DeserializeObject<IEnumerable<Computer>>(computersJson);
 
-            Console.WriteLine(totalValue);
+              IEnumerable<Computer>? computersSystem = System.Text.Json.JsonSerializer.Deserialize<IEnumerable<Computer>>(computersJson, options);
+               
 
-            totalValue = 0;
+              if (computersNewtonSoft != null)
+              {
+                    foreach (Computer computer in computersNewtonSoft)
+                    {
+                        //Console.WriteLine(computer.Motherboard);                         
+                        string sql =  @"INSERT INTO TutorialAppSchema.Computer(
+                            Motherboard,
+                            HasWifi,
+                            HasLTE,
+                            ReleaseDate,
+                            Price ,
+                            VideoCard
+                        ) VALUES('" + EscapeSingleQuote(computer.Motherboard)
+                                +"','" + computer.HasWifi
+                                +"','" + computer.HasLTE
+                                +"','" + computer.ReleaseDate?.ToString("yyyy-MM-dd")
+                                +"','" + computer.Price.ToString("0.00", CultureInfo.InvariantCulture)
+                                +"','" + EscapeSingleQuote(computer.VideoCard)
+                         +  "')";
 
-            startTime = DateTime.Now;
+                         dapper.ExecuteSql(sql);
+                    }
+              }
+              JsonSerializerSettings settings = new JsonSerializerSettings()
+              {
 
-            foreach(int intForCompression in intsToCompress)
-            {
-                 totalValue += intForCompression;
-            }
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
 
-            Console.WriteLine((DateTime.Now -startTime).TotalSeconds);     
+              };
 
-            Console.WriteLine(totalValue);
+              string computersCopyNewtonsoft = JsonConvert.SerializeObject(computersNewtonSoft, settings);
+              
+              File.WriteAllText("computersCopyNewtonsoft.txt", computersCopyNewtonsoft);
 
-            totalValue = 0;
+              string computersCopySystem = System.Text.Json.JsonSerializer.Serialize(computersNewtonSoft,options);
+              
+              File.WriteAllText("computersCopySystem.txt", computersCopySystem);
 
-            startTime = DateTime.Now;
+        }
 
-            int index = 0;
+        static string EscapeSingleQuote(string input)
+        {
+            string output = input.Replace("'","''");
 
-            while(index < intsToCompress.Length)
-            {
-                totalValue += intsToCompress[index];
-                index ++;
-            }
-
-            Console.WriteLine((DateTime.Now -startTime).TotalSeconds);     
-
-            Console.WriteLine(totalValue);
-
-            totalValue = 0;
-
-            startTime = DateTime.Now;
-
-            index = 0;
-
-            do
-            {
-                totalValue += intsToCompress[index];
-                index ++;
-            }
-            while(index < intsToCompress.Length);
-
-            Console.WriteLine((DateTime.Now -startTime).TotalSeconds);     
-
-            Console.WriteLine(totalValue);
-
+            return output;
         }
     }   
    

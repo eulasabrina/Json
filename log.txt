@@ -1,0 +1,65 @@
+
+INSERT INTO TutorialAppSchema.Computer(
+                Motherboard,
+                HasWifi,
+                HasLTE,
+                ReleaseDate,
+                Price ,
+                VideoCard
+            ) VALUES('Z690','True','False','08/03/2024 10:46:16','943.87','RTX 2060')
+INSERT INTO TutorialAppSchema.Computer(
+                Motherboard,
+                HasWifi,
+                HasLTE,
+                ReleaseDate,
+                Price ,
+                VideoCard
+            ) VALUES('Z690','True','False','08/03/2024 10:46:16','943.87','RTX 2060')
+INSERT INTO TutorialAppSchema.Computer(
+                Motherboard,
+                HasWifi,
+                HasLTE,
+                ReleaseDate,
+                Price ,
+                VideoCard
+            ) VALUES('Z690','True','False','08/03/2024 10:47:05','943.87','RTX 2060')
+
+INSERT INTO TutorialAppSchema.Computer(
+                Motherboard,
+                HasWifi,
+                HasLTE,
+                ReleaseDate,
+                Price ,
+                VideoCard
+            ) VALUES('Z690','True','False','08/03/2024 10:48:11','943.87','RTX 2060')
+
+
+INSERT INTO TutorialAppSchema.Computer(
+                Motherboard,
+                HasWifi,
+                HasLTE,
+                ReleaseDate,
+                Price ,
+                VideoCard
+            ) VALUES('Z690','True','False','08/03/2024 11:09:19','943.87','RTX 2060')
+
+
+INSERT INTO TutorialAppSchema.Computer(
+                Motherboard,
+                HasWifi,
+                HasLTE,
+                ReleaseDate,
+                Price ,
+                VideoCard
+            ) VALUES('Z690','True','False','08/03/2024 11:11:09','943.87','RTX 2060')
+
+
+INSERT INTO TutorialAppSchema.Computer(
+                Motherboard,
+                HasWifi,
+                HasLTE,
+                ReleaseDate,
+                Price ,
+                VideoCard
+            ) VALUES('Z690','True','False','08/03/2024 11:13:14','943.87','RTX 2060')
+
